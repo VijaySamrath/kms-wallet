@@ -87,25 +87,22 @@ export class VaultService {
   async getUserWallets(userId: string): Promise<VaultWallet[]> {
     try {
       const command = new ListSecretsCommand({
-        Filters: [
-          { Key: 'tag-key', Values: ['userId'] },
-          { Key: 'tag-value', Values: [userId] },
-          { Key: 'tag-key', Values: ['type'] },
-          { Key: 'tag-value', Values: ['wallet'] }
-        ]
+        Filters: [{ Key: 'name', Values: [this.getSecretName(VaultPath.WALLETS, userId)] }]
       });
 
       const response = await this.client.send(command);
       const wallets: VaultWallet[] = [];
 
       for (const secret of response.SecretList || []) {
-        if (secret.Name) {
-          try {
-            const secretValue = await this.getSecret(secret.Name);
-            wallets.push(JSON.parse(secretValue));
-          } catch (error) {
-            console.warn(`⚠️ Failed to parse secret ${secret.Name}`);
-          }
+        if (!secret.Name) {
+          continue;
+        }
+
+        try {
+          const secretValue = await this.getSecret(secret.Name);
+          wallets.push(JSON.parse(secretValue) as VaultWallet);
+        } catch (error) {
+          console.warn(`⚠️ Failed to parse secret ${secret.Name}`);
         }
       }
 

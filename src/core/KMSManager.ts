@@ -2,11 +2,11 @@ import {
   KMSClient,
   GenerateDataKeyCommand,
   DecryptCommand,
+  EncryptCommand,
   GenerateDataKeyCommandOutput,
   DecryptCommandOutput
 } from '@aws-sdk/client-kms';
 import { createKMSClient } from '../config/aws-config';
-import { MemoryCleaner } from '../utils/MemoryCleaner';
 
 export interface DataKey {
   plaintext: Buffer;
@@ -27,10 +27,10 @@ export class KMSManager {
   async generateDataKey(keySpec: 'AES_256' | 'AES_128' = 'AES_256'): Promise<DataKey> {
     try {
       console.log('🔑 Generating data key from KMS...');
-      
+
       const command = new GenerateDataKeyCommand({
         KeyId: this.keyId,
-        KeySpec: keySpec,
+        KeySpec: keySpec
       });
 
       const response: GenerateDataKeyCommandOutput = await this.client.send(command);
@@ -78,8 +78,6 @@ export class KMSManager {
   }
 
   async encryptWithKMS(plaintext: Buffer): Promise<Buffer> {
-    // This is for encrypting small amounts of data directly with KMS
-    // Not recommended for large data, use generateDataKey instead
     try {
       const command = new EncryptCommand({
         KeyId: this.keyId,

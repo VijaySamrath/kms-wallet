@@ -10,15 +10,15 @@
     "server": "node dist/api/server.js",
     "server:dev": "nodemon src/api/server.ts",
     "demo": "ts-node src/demo/FullDemo.ts",
-    "demo:quick": "ts-node src/demo/QuickDemo.ts",
-    "demo:login": "ts-node src/demo/LoginDemo.ts",
     "setup": "chmod +x scripts/setup-aws.sh && ./scripts/setup-aws.sh",
-    "clean": "rm -rf dist node_modules logs",
+    "clean": "rm -rf dist logs",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts",
     "test": "echo \"No tests specified\" && exit 0",
     "prebuild": "npm run clean",
-    "postinstall": "echo \"✅ Dependencies installed successfully\""
+    "postinstall": "echo \"✅ Dependencies installed successfully\"",
+    "demo:full": "ts-node src/demo/FullDemo.ts",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@aws-sdk/client-kms": "^3.525.0",
@@ -46,7 +46,14 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
-  "keywords": ["aws", "kms", "vault", "wallet", "blockchain", "encryption"],
+  "keywords": [
+    "aws",
+    "kms",
+    "vault",
+    "wallet",
+    "blockchain",
+    "encryption"
+  ],
   "author": "",
   "license": "ISC"
 }
