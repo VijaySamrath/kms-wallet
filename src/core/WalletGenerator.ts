@@ -44,7 +44,7 @@ export class WalletGenerator {
       console.log(`   • Address: ${wallet.address}`);
       console.log(`   • Wallet ID: ${walletId}`);
 
-      // 2. Generate data key from KMS
+      // 2. Generate data key from KMS (without encryption context)
       const dataKey = await this.kms.generateDataKey();
 
       // 3. Encrypt private key with data key
@@ -91,10 +91,18 @@ export class WalletGenerator {
         storedWallet.authTag
       );
 
-      // 3. Clean up data key
+      // 3. Verify the decrypted key matches the address
+      const recoveredWallet = new ethers.Wallet(privateKey);
+      if (recoveredWallet.address.toLowerCase() !== storedWallet.publicAddress.toLowerCase()) {
+        throw new Error('Decrypted key does not match public address');
+      }
+
+      // 4. Clean up data key
       MemoryCleaner.clearBuffer(dataKey);
 
       console.log('✅ Wallet decrypted successfully');
+      console.log(`   • Address verified: ${recoveredWallet.address}`);
+
       return {
         privateKey,
         publicAddress: storedWallet.publicAddress

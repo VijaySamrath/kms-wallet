@@ -95,7 +95,7 @@ export function createRouter(): Router {
       
       res.json({
         success: true,
-        wallets: wallets.map(w => ({
+        wallets: wallets.map((w: { walletId: any; publicAddress: any; createdAt: any; }) => ({
           walletId: w.walletId,
           publicAddress: w.publicAddress,
           createdAt: w.createdAt
